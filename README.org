@@ -1,0 +1,78 @@
+#+TITLE: simple iterator protocol for common lisp
+
+* com.clearly-useful.iterator-protocol
+
+  *Overview*:
+     This package provides a simple iterator protocol for common lisp
+   which integrates with the sequence protocol.
+
+   From the protocol docstring:
+
+     A simple iteration protocol for Common Lisp.
+   Unlike sequences, iterators are stateful, and are
+   not intended to be held onto or passed around. Their
+   use should be hidden by some other construct. If you
+   are explicitly creating and advancing an iterator,
+   chances are you are Doing It Wrong.
+     Iterators should be be treated as though they
+   have dynamic extent.
+
+     This package is intentionally minimal, and only provides
+   a protcol for handling stateful iterators & basic implementations
+   for built in types. This protocol e.g. consume an object representing
+   the lines of a file, or some strings in memory, without having to
+   special case anything. The actual implementation of such an object
+   is beyond the scope of this package.
+
+* exported symbols:
+
+** iterator
+   /protocol/
+   the iterator protocol, which has two methods:
+   =iterator-next!= and =iterator-finish!=
+   
+** iterator
+   /type/
+   the type of the iterator protocol
+
+** iterator
+   /generic function/
+   a function to produce an iterator from an object.
+   this function acts as the identity function for
+   iterators, and provides a default implementation
+   for the built in types =vector= and =array=, as
+   well as any object implementing the =seq= protocol.
+
+** iterator-p
+   /function/
+   the test function for the iterator protocol
+
+** iterator-next!
+   /protocol method/
+   returns two values:
+    1. the value of the iterator or nil,
+    2. t or nil depending whether a value was found. 
+   then advances the iterator.
+
+** iterator-finish!
+   /protocol method/
+   performs 'clean up' operations specific
+   to the iterator. e.g. closing a file.
+
+** do-iterator
+   /macro/
+   similar to dolist.
+   #+begin_src lisp
+     (do-iterator (x '(a b c) (list x x))
+       (print x))
+   #+end_src
+   will call iterator on '(a b c),
+   bind x to subsequent values of
+   iterator-next!, finally call
+   iterator-finish! and return the value
+   of (list x x), i.e.
+   print a, b, and c, then return '(c c)
+   
+   
+
+   
