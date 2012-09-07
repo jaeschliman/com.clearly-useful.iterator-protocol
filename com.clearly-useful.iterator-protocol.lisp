@@ -76,6 +76,9 @@ and provides a default implementation for seqs.")
 			   :size size)))
 
 
+(defmethod iterator ((a hash-table))
+  (iterator (seq a)))
+
 (defmacro do-iterator ((var form &optional return-form) &body body)
   (let ((it (gensym))
 	(val (gensym))
