@@ -20,13 +20,17 @@ then advances the iterator.")
 to the iterator. e.g. closing a file."))
 
 
-(defstruct %seq-iterator seq)
+(eval-when (:compile-toplevel :load-toplevel :execute)
+  (defstruct %seq-iterator seq)
+  (defstruct %vector-iterator size vec pos))
 
 (defun %value (o) (head (%seq-iterator-seq o)))
 (defun %has-value (o) (%seq-iterator-seq o))
 (defun %advance (o) (prog1 o
 		      (setf (%seq-iterator-seq o)
 			    (tail (%seq-iterator-seq o)))))
+
+
 (extend-type %seq-iterator     
   iterator
   (iterator-next! (it)
@@ -38,7 +42,7 @@ to the iterator. e.g. closing a file."))
   (iterator-finish! (it)
 		    (declare (ignore it))))
 
-(defstruct %vector-iterator size vec pos)
+
 (extend-type %vector-iterator
   iterator
   (iterator-next! (it)
@@ -71,7 +75,9 @@ and provides a default implementation for seqs.")
   (let ((size (array-total-size an)))
     (make-%vector-iterator :vec (make-array size
 					    :displaced-to an
-					    :displaced-index-offset 0)
+					    :displaced-index-offset 0
+					    :element-type
+					    (array-element-type an))
 			   :pos 0
 			   :size size)))
 
