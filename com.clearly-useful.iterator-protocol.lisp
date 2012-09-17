@@ -22,7 +22,8 @@ to the iterator. e.g. closing a file."))
 
 (eval-when (:compile-toplevel :load-toplevel :execute)
   (defstruct %seq-iterator seq)
-  (defstruct %vector-iterator size vec pos))
+  (defstruct %vector-iterator size vec pos)
+  (defstruct %indexable-iterator size idx pos))
 
 (defun %value (o) (head (%seq-iterator-seq o)))
 (defun %has-value (o) (%seq-iterator-seq o))
@@ -56,6 +57,21 @@ to the iterator. e.g. closing a file."))
   (iterator-finish! (it)
 		    (declare (ignore it))))
 
+(extend-type %indexable-iterator
+  iterator
+  (iterator-next! (it)
+		  (if (< (%indexable-iterator-pos it)
+			 (%indexable-iterator-size it))
+		      (let ((n (%indexable-iterator-pos it)))
+			(incf (%indexable-iterator-pos it))
+			(values (element-at (%indexable-iterator-size it) n)
+				t))
+		      (values nil nil)))
+  (iterator-finish! (it)
+		     (declare (ignore it))))
+
+
+#|
 (defgeneric iterator (object)
   (:documentation "produce an iterator from object.
 acts as the identity function for iterators,
@@ -65,6 +81,19 @@ and provides a default implementation for seqs.")
       (iterator object)
       (seq (make-%seq-iterator :seq object))
       (t (error "No method to convert ~A to an ITERATOR" object)))))
+|#
+
+(defmethod iterator (object)
+  (etypecase object
+    (indexable (if (counted-p object)
+		   ;;using indexable only makes sense
+		   ;;for constant-time access
+		   (make-%indexable-iterator :idx object
+					     :size (count-elements object)
+					     :pos 0)
+		   (make-%seq-iterator :seq (seq object))))
+    (seq (make-%seq-iterator :seq object))
+    (t (error "No method to convert ~S to ~S" object 'iterator))))
 
 (defmethod iterator ((a vector))
   (make-%vector-iterator :vec a

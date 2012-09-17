@@ -1,6 +1,6 @@
 (defpackage #:com.clearly-useful.iterator-protocol.test
   (:use #:cl
-	#:com.clearly-useful.sequence-protocol
+	#:com.clearly-useful.generic-collection-interface
 	#:com.clearly-useful.iterator-protocol))
 
 (in-package #:com.clearly-useful.iterator-protocol.test)
@@ -19,6 +19,11 @@
     (do-iterator (x seq)
       (assert (equalp x (head s)))
       (setf s (tail s)))))
+
+(assert (com.clearly-useful.iterator-protocol::%seq-iterator-p
+	 (iterator '(a b c))))
+(assert (com.clearly-useful.iterator-protocol::%vector-iterator-p
+	 (iterator #(a b c))))
 
 (mapcar #'test-builtin-iterator
 	'(;;cons
