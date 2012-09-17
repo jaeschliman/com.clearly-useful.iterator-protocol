@@ -71,18 +71,6 @@ to the iterator. e.g. closing a file."))
 		     (declare (ignore it))))
 
 
-#|
-(defgeneric iterator (object)
-  (:documentation "produce an iterator from object.
-acts as the identity function for iterators,
-and provides a default implementation for seqs.")
-  (:method (object)
-    (etypecase object
-      (iterator object)
-      (seq (make-%seq-iterator :seq object))
-      (t (error "No method to convert ~A to an ITERATOR" object)))))
-|#
-
 (defmethod iterator (object)
   (etypecase object
     (indexable (if (counted-p object)
@@ -95,6 +83,7 @@ and provides a default implementation for seqs.")
     (seq (make-%seq-iterator :seq object))
     (associative (make-%seq-iterator :seq (seq object)))
     (t (error "No method to convert ~S to ~S" object 'iterator))))
+
 
 (defmethod iterator ((a vector))
   (make-%vector-iterator :vec a
