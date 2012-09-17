@@ -93,6 +93,7 @@ and provides a default implementation for seqs.")
 					     :pos 0)
 		   (make-%seq-iterator :seq (seq object))))
     (seq (make-%seq-iterator :seq object))
+    (associative (make-%seq-iterator :seq (seq object)))
     (t (error "No method to convert ~S to ~S" object 'iterator))))
 
 (defmethod iterator ((a vector))
