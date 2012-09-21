@@ -12,10 +12,13 @@ chances are you are Doing It Wrong.
   Iterators should be be treated as though they
 have dynamic extent.
 "
+  (:eponymous-method t)
+  
   (iterator-next! (it) "returns two values:
   1. the next value of the iterator or nil,
   2. t or nil depending depending whether a value was found. 
 then advances the iterator.")
+  
   (iterator-finish! (it) "performs 'clean up' operations specific
 to the iterator. e.g. closing a file."))
 
