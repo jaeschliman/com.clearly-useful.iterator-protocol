@@ -6,7 +6,8 @@
 (in-package #:com.clearly-useful.iterator-protocol.test)
 
 (defun test-builtin-iterator (seq)
-  (assert (typep seq 'seq))
+  "confirm that it works as is, and after seq."
+  (assert (typep seq 'seqable))
   (let ((it (iterator seq)))
     (doseq (o seq)
       (multiple-value-bind (val continue) (iterator-next! it)
@@ -18,7 +19,9 @@
   (let ((s seq))
     (do-iterator (x seq)
       (assert (equalp x (head s)))
-      (setf s (tail s)))))
+      (setf s (tail s))))
+  (unless (typep seq 'seq)
+    (test-builtin-iterator (seq seq))))
 
 (assert (com.clearly-useful.iterator-protocol::%seq-iterator-p
 	 (iterator '(a b c))))
