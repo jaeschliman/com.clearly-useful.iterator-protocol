@@ -5,9 +5,10 @@
   :description "A simple iterator protocol for Common Lisp."
   :author "Jason Aeschliman <j.aeschliman@gmail.com>"
   :license "revised BSD"
-  :version "0.1"
+  :version "0.1.2"
   :depends-on (#:com.clearly-useful.protocols
                #:com.clearly-useful.generic-collection-interface)
   :components ((:file "package")
-               (:file "com.clearly-useful.iterator-protocol")))
+               (:file "com.clearly-useful.iterator-protocol"))
+  :properties ((:com.clearly-useful)))
 

@@ -28,11 +28,11 @@ to the iterator. e.g. closing a file."))
   (defstruct %vector-iterator size vec pos)
   (defstruct %indexable-iterator size idx pos))
 
-(defun %value (o) (head (%seq-iterator-seq o)))
+(defun %value (o) (fst (%seq-iterator-seq o)))
 (defun %has-value (o) (%seq-iterator-seq o))
 (defun %advance (o) (prog1 o
 		      (setf (%seq-iterator-seq o)
-			    (tail (%seq-iterator-seq o)))))
+			    (rst (%seq-iterator-seq o)))))
 
 
 (extend-type %seq-iterator     
@@ -67,7 +67,7 @@ to the iterator. e.g. closing a file."))
 			 (%indexable-iterator-size it))
 		      (let ((n (%indexable-iterator-pos it)))
 			(incf (%indexable-iterator-pos it))
-			(values (element-at (%indexable-iterator-size it) n)
+			(values (idx (%indexable-iterator-size it) n)
 				t))
 		      (values nil nil)))
   (iterator-finish! (it)
@@ -76,15 +76,15 @@ to the iterator. e.g. closing a file."))
 
 (defmethod iterator (object)
   (etypecase object
-    (indexable (if (counted-p object)
+    (indexed-collection (if (counted-p object)
 		   ;;using indexable only makes sense
 		   ;;for constant-time access
 		   (make-%indexable-iterator :idx object
-					     :size (count-elements object)
+					     :size (len object)
 					     :pos 0)
 		   (make-%seq-iterator :seq (seq object))))
     (seq (make-%seq-iterator :seq object))
-    (associative (make-%seq-iterator :seq (seq object)))
+    (associative-collection (make-%seq-iterator :seq (seq object)))
     (t (error "No method to convert ~S to ~S" object 'iterator))))
 
 

@@ -18,8 +18,8 @@
     (assert (null (nth-value 1 (iterator-next! it)))))
   (let ((s seq))
     (do-iterator (x seq)
-      (assert (equalp x (head s)))
-      (setf s (tail s))))
+      (assert (equalp x (fst s)))
+      (setf s (rst s))))
   (unless (typep seq 'seq)
     (test-builtin-iterator (seq seq))))
 
